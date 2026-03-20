@@ -3,613 +3,434 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GiftGuru • заказы приходят продавцу</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Новая жизнь - Поиск животных в Элисте</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         body {
-            background: #fdf5ed;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
-        .app-container {
-            max-width: 1300px;
-            margin: 0 auto;
-            background: white;
-            box-shadow: 0 20px 60px rgba(233, 107, 75, 0.1);
-            min-height: 100vh;
-        }
+
         .header {
-            padding: 20px 30px;
             background: white;
-            border-bottom: 1px solid #ffe4d5;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
         .logo {
-            font-weight: 700;
-            font-size: 28px;
-            background: linear-gradient(130deg, #b2452a, #e96b4b);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            font-size: 24px;
+            font-weight: bold;
+            color: #059669;
+            text-decoration: none;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        .logo i {
-            color: #e96b4b;
+
+        .logo-img {
+            height: 50px;
+            width: auto;
         }
-        .user-info {
+
+        .nav-menu {
             display: flex;
+            gap: 25px;
             align-items: center;
-            gap: 20px;
+            flex-wrap: wrap;
         }
-        .cart-icon {
-            position: relative;
-            cursor: pointer;
-            font-size: 24px;
-            color: #b2452a;
-        }
-        .cart-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #e96b4b;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .user-badge {
-            background: #fceae3;
-            padding: 8px 16px;
-            border-radius: 30px;
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
             font-weight: 500;
-            cursor: pointer;
+            transition: color 0.3s;
         }
+
+        .nav-menu a:hover {
+            color: #059669;
+        }
+
         .btn {
-            background: #b2452a;
-            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
             border: none;
-            padding: 12px 24px;
-            border-radius: 60px;
-            font-weight: 600;
             cursor: pointer;
-            transition: 0.2s;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
         }
-        .btn:hover {
-            background: #e96b4b;
+
+        .btn-primary {
+            background: #059669;
+            color: white;
         }
+
+        .btn-primary:hover {
+            background: #047857;
+            transform: translateY(-2px);
+        }
+
         .btn-outline {
             background: transparent;
-            border: 2px solid #b2452a;
-            color: #b2452a;
+            border: 2px solid #059669;
+            color: #059669;
         }
-        .content {
-            padding: 30px;
+
+        .hero {
+            text-align: center;
+            padding: 60px 0 40px;
         }
-        .quiz-section {
-            background: #fef9f5;
-            border-radius: 40px;
-            padding: 30px;
-            margin-bottom: 40px;
-            border: 1px solid #ffd9c9;
-        }
-        .quiz-title {
-            font-size: 24px;
-            font-weight: 700;
+
+        .hero h1 {
+            color: white;
+            font-size: 48px;
             margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
-        .progress-bar {
-            height: 8px;
-            background: #f0dcd0;
+
+        .hero p {
+            color: white;
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
             border-radius: 20px;
-            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #059669;
+        }
+
+        .section-title {
+            color: white;
+            font-size: 32px;
+            margin: 40px 0 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .section-title a {
+            color: white;
+            font-size: 16px;
+            text-decoration: none;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 30px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .pet-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .pet-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .pet-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
             overflow: hidden;
         }
-        .progress-fill {
+
+        .pet-image img {
+            width: 100%;
             height: 100%;
-            background: #e96b4b;
-            transition: width 0.3s;
+            object-fit: cover;
         }
-        .quiz-question {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 20px;
+
+        .pet-image .emoji {
+            font-size: 64px;
         }
-        .quiz-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        .quiz-option {
-            background: white;
-            border: 2px solid #ffd4c2;
-            border-radius: 60px;
-            padding: 15px 30px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .quiz-option.selected {
-            background: #b2452a;
-            border-color: #b2452a;
-            color: white;
-        }
-        .quiz-nav {
-            display: flex;
-            gap: 15px;
-        }
-        .catalog-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-        .filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .filter-chip {
-            background: #f0e3db;
-            padding: 10px 20px;
-            border-radius: 40px;
-            cursor: pointer;
-        }
-        .filter-chip.active {
-            background: #b2452a;
-            color: white;
-        }
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-        }
-        .product-card {
-            background: white;
-            border-radius: 30px;
+
+        .pet-info {
             padding: 20px;
-            border: 1px solid #ffded0;
-            transition: 0.2s;
         }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(233, 107, 75, 0.15);
-        }
-        .product-image {
-            width: 100%;
-            height: 200px;
-            background: #fceae3;
+
+        .badge {
+            background: #d1fae5;
+            color: #047857;
+            padding: 5px 12px;
             border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
-            margin-bottom: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
         }
-        .product-title {
-            font-weight: 700;
-            font-size: 18px;
+
+        .pet-info h3 {
+            margin-bottom: 10px;
+            color: #064e3b;
         }
-        .product-price {
-            font-weight: 800;
-            font-size: 24px;
-            color: #b2452a;
-            margin: 10px 0;
+
+        .pet-info p {
+            color: #666;
+            margin: 5px 0;
+            font-size: 14px;
         }
-        .btn-add {
+
+        .map-container {
             width: 100%;
-            background: #b2452a;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
+            height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 40px 0;
+            border: 3px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-        .cart-modal {
-            position: fixed;
-            top: 0;
-            right: -400px;
-            width: 380px;
-            height: 100vh;
-            background: white;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.1);
-            transition: right 0.3s;
-            z-index: 1000;
-            padding: 25px;
-            overflow-y: auto;
-        }
-        .cart-modal.open {
-            right: 0;
-        }
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        .cart-item {
-            display: flex;
-            gap: 15px;
-            padding: 15px 0;
-            border-bottom: 1px solid #f0dcd0;
-        }
-        .cart-item-image {
-            width: 60px;
-            height: 60px;
-            background: #fceae3;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-        .cart-item-info {
-            flex: 1;
-        }
-        .cart-item-title {
-            font-weight: 600;
-        }
-        .cart-item-price {
-            color: #b2452a;
-            font-weight: 700;
-        }
-        .cart-item-remove {
-            color: #999;
-            cursor: pointer;
-        }
-        .cart-total {
-            font-size: 20px;
-            font-weight: 700;
-            margin: 20px 0;
-        }
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
+
+        #map {
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.3);
-            display: none;
-            z-index: 999;
         }
-        .overlay.active {
+
+        .footer {
+            background: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: 60px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .footer h4 {
+            margin-bottom: 20px;
+            color: #a7f3d0;
+        }
+
+        .footer a {
+            color: #cbd5e1;
+            text-decoration: none;
             display: block;
-        }
-        .modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 40px;
-            border-radius: 50px;
-            z-index: 2000;
-            display: none;
-            max-width: 400px;
-            width: 90%;
-        }
-        .modal.active {
-            display: block;
-        }
-        .modal input {
-            width: 100%;
-            padding: 15px 20px;
             margin: 10px 0;
-            border: 2px solid #ffd4c2;
-            border-radius: 60px;
-            font-size: 16px;
-            outline: none;
+            transition: color 0.3s;
         }
-        .modal input:focus {
-            border-color: #b2452a;
+
+        .footer a:hover {
+            color: white;
         }
-        .close {
-            float: right;
-            font-size: 24px;
-            cursor: pointer;
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #374151;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .hero h1 {
+                font-size: 32px;
+            }
         }
     </style>
 </head>
 <body>
-<div class="app-container">
-    <!-- Шапка -->
-    <div class="header">
-        <div class="logo">
-            <i class="fas fa-gift"></i> GiftGuru
+    <header class="header">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <!-- ВСТАВЬТЕ СЮДА ВАШ ЛОГОТИП PNG -->
+                <img src="logo.png" class="logo-img" alt="Новая жизнь" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span style="display: none;">🐾 Новая Жизнь</span>
+            </a>
+            
+            <nav class="nav-menu">
+                <a href="index.html">Главная</a>
+                <a href="search.html">Найти</a>
+                <a href="add.html">Добавить</a>
+                <a href="login.html" id="loginLink">Вход</a>
+                <a href="register.html" id="registerLink" class="btn btn-primary">Регистрация</a>
+                <a href="profile.html" id="profileLink" style="display: none;">Личный кабинет</a>
+                <a href="#" id="logoutBtn" style="display: none;" class="btn btn-outline">Выйти</a>
+            </nav>
         </div>
-        <div class="user-info">
-            <div class="cart-icon" onclick="toggleCart()">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-count" id="cartCount">0</span>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="hero">
+                <h1>🐾 Найди друга в Элисте</h1>
+                <p>Помогаем потерянным животным найти свой дом</p>
             </div>
-            <div class="user-badge" onclick="showAuthModal()">
-                <i class="fa-regular fa-user"></i> <span id="userName">Гость</span>
+
+            <div class="stats-grid" id="statsContainer">
+                <div class="stat-card"><div class="stat-number" id="totalCount">0</div><div>Всего объявлений</div></div>
+                <div class="stat-card"><div class="stat-number" id="foundCount">0</div><div>Нашли дом</div></div>
+                <div class="stat-card"><div class="stat-number" id="usersCount">0</div><div>Пользователей</div></div>
             </div>
+
+            <div class="section-title">
+                <span>📍 Недавно найденные</span>
+                <a href="search.html">Смотреть все →</a>
+            </div>
+            <div class="cards-grid" id="announcementsContainer">
+                <div style="text-align: center; color: white; padding: 40px;">Загрузка...</div>
+            </div>
+
+            <div class="section-title">📍 Мы на карте Элисты</div>
+            <div class="map-container"><div id="map"></div></div>
         </div>
-    </div>
+    </main>
 
-    <div class="content">
-        <!-- Тест -->
-        <div class="quiz-section">
-            <div class="quiz-title">🎯 Персональный подбор подарков</div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="quizProgress" style="width: 0%"></div>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div><h4>🐾 Новая Жизнь</h4><p>Помогаем животным найти дом с 2023 года</p></div>
+                <div><h4>Контакты</h4><a href="tel:88001234567">📞 8 (800) 123-45-67</a><a href="mailto:mail@newlife.ru">✉️ mail@newlife.ru</a></div>
+                <div><h4>Навигация</h4><a href="index.html">Главная</a><a href="search.html">Поиск</a><a href="add.html">Добавить</a></div>
+                <div><h4>Пользователю</h4><a href="login.html">Вход</a><a href="register.html">Регистрация</a><a href="profile.html">Личный кабинет</a></div>
             </div>
-            <div id="quizContainer"></div>
-            <div class="quiz-nav">
-                <button class="btn btn-outline" id="prevBtn" onclick="prevQuestion()" style="display: none;">Назад</button>
-                <button class="btn" id="nextBtn" onclick="nextQuestion()">Начать</button>
-            </div>
+            <div class="copyright">© 2026 Новая Жизнь - Элиста. Все права защищены.</div>
         </div>
+    </footer>
 
-        <!-- Каталог -->
-        <div class="catalog-header">
-            <h2>🎁 Рекомендуемые подарки</h2>
-            <div class="filters">
-                <span class="filter-chip active" onclick="filterProducts('all')">Все</span>
-                <span class="filter-chip" onclick="filterProducts('до 2000')">до 2000₽</span>
-                <span class="filter-chip" onclick="filterProducts('2000-5000')">2000-5000₽</span>
-                <span class="filter-chip" onclick="filterProducts('5000+')">5000+₽</span>
-            </div>
-        </div>
-
-        <div class="products-grid" id="productsGrid"></div>
-    </div>
-
-    <!-- Модалка авторизации (для имени клиента) -->
-    <div class="overlay" id="authOverlay" onclick="hideAuthModal()"></div>
-    <div class="modal" id="authModal">
-        <span class="close" onclick="hideAuthModal()">&times;</span>
-        <h3>Введите ваши данные</h3>
-        <input type="text" id="userNameInput" placeholder="Ваше имя" value="Александр">
-        <input type="email" id="userEmailInput" placeholder="Ваш email" value="client@mail.ru">
-        <button class="btn" style="width: 100%;" onclick="saveUser()">Сохранить</button>
-    </div>
-
-    <!-- Корзина -->
-    <div class="overlay" id="cartOverlay" onclick="toggleCart()"></div>
-    <div class="cart-modal" id="cartModal">
-        <div class="cart-header">
-            <h3>Корзина</h3>
-            <i class="fas fa-times" style="cursor: pointer;" onclick="toggleCart()"></i>
-        </div>
-        <div id="cartItems"></div>
-        <div class="cart-total" id="cartTotal">Итого: 0₽</div>
-        <button class="btn" style="width: 100%;" onclick="checkout()">Оформить заказ</button>
-    </div>
-</div>
-
-<script>
-    // ==================== ТОВАРЫ ====================
-    const products = [
-        { id: 1, name: 'Умная фитнес-бутылка', price: 1900, category: 'Спорт', image: '🥤', tags: ['спорт'] },
-        { id: 2, name: 'Набор для йоги', price: 3200, category: 'Спорт', image: '🧘', tags: ['спорт'] },
-        { id: 3, name: 'Массажёр для шеи', price: 4500, category: 'Техника', image: '💆', tags: ['техника'] },
-        { id: 4, name: 'Портативная колонка', price: 2800, category: 'Техника', image: '🔊', tags: ['техника'] },
-        { id: 5, name: 'Бестселлер "Сила привычки"', price: 800, category: 'Книги', image: '📚', tags: ['книги'] },
-        { id: 6, name: 'Набор свечей', price: 1700, category: 'Красота', image: '🕯️', tags: ['красота'] },
-        { id: 7, name: 'Умное кольцо', price: 8900, category: 'Техника', image: '💍', tags: ['техника'] },
-        { id: 8, name: 'Набор для каллиграфии', price: 2100, category: 'Хобби', image: '✒️', tags: ['хобби'] },
-        { id: 9, name: 'Подписка на кино', price: 2500, category: 'Развлечения', image: '🎬', tags: ['развлечения'] },
-        { id: 10, name: 'Игра "Мафия"', price: 1500, category: 'Игры', image: '🎲', tags: ['игры'] },
-        { id: 11, name: 'Кофеварка', price: 5500, category: 'Техника', image: '☕', tags: ['техника'] },
-        { id: 12, name: 'Карта звездного неба', price: 2900, category: 'Декор', image: '✨', tags: ['декор'] }
-    ];
-
-    // ==================== ВОПРОСЫ ====================
-    const questions = [
-        { text: 'Кому ищем подарок?', options: ['👩 Женщине', '👨 Мужчине'] },
-        { text: 'Какое увлечение?', options: ['⚽ Спорт', '💻 Технологии', '📚 Книги'] },
-        { text: 'Какой бюджет?', options: ['💰 до 2000₽', '💰💰 2000-5000₽', '💰💰💰 5000+₽'] }
-    ];
-
-    // ==================== СОСТОЯНИЕ ====================
-    let currentUser = JSON.parse(localStorage.getItem('giftguru_user')) || { name: 'Гость', email: 'client@mail.ru' };
-    let answers = [null, null, null];
-    let currentQuestion = 0;
-    let cart = JSON.parse(localStorage.getItem('giftguru_cart')) || [];
-    let recommendedProducts = [...products];
-
-    // ==================== ИНИЦИАЛИЗАЦИЯ ====================
-    document.addEventListener('DOMContentLoaded', () => {
-        updateUserBadge();
-        renderQuiz();
-        renderProducts(recommendedProducts);
-        updateCartUI();
-    });
-
-    // ==================== ТЕСТ ====================
-    function renderQuiz() {
-        if (currentQuestion >= questions.length) {
-            document.getElementById('quizContainer').innerHTML = '<div class="quiz-question">✅ Тест пройден!</div>';
-            document.getElementById('nextBtn').style.display = 'none';
-            document.getElementById('prevBtn').style.display = 'none';
-            applyRecommendations();
-            return;
-        }
-        const q = questions[currentQuestion];
-        let html = `<div class="quiz-question">${q.text}</div><div class="quiz-options">`;
-        q.options.forEach(opt => {
-            const selected = answers[currentQuestion] === opt ? 'selected' : '';
-            html += `<div class="quiz-option ${selected}" onclick="selectAnswer('${opt}')">${opt}</div>`;
-        });
-        html += '</div>';
-        document.getElementById('quizContainer').innerHTML = html;
-        document.getElementById('quizProgress').style.width = ((currentQuestion) / questions.length) * 100 + '%';
-        document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'inline-block' : 'none';
-        document.getElementById('nextBtn').innerText = currentQuestion === questions.length - 1 ? 'Показать подарки' : 'Далее';
-    }
-
-    window.selectAnswer = (answer) => {
-        answers[currentQuestion] = answer;
-        renderQuiz();
-    };
-
-    window.nextQuestion = () => {
-        if (!answers[currentQuestion]) { alert('Выберите вариант'); return; }
-        if (currentQuestion < questions.length - 1) {
-            currentQuestion++;
-            renderQuiz();
-        } else {
-            currentQuestion = questions.length;
-            renderQuiz();
-        }
-    };
-
-    window.prevQuestion = () => {
-        if (currentQuestion > 0) {
-            currentQuestion--;
-            renderQuiz();
-        }
-    };
-
-    function applyRecommendations() {
-        let filtered = [...products];
-        const lastAnswer = answers[answers.length - 1];
-        if (lastAnswer === '💰 до 2000₽') filtered = filtered.filter(p => p.price <= 2000);
-        else if (lastAnswer === '💰💰 2000-5000₽') filtered = filtered.filter(p => p.price > 2000 && p.price <= 5000);
-        else if (lastAnswer === '💰💰💰 5000+₽') filtered = filtered.filter(p => p.price > 5000);
-        recommendedProducts = filtered.length ? filtered : products;
-        renderProducts(recommendedProducts);
-    }
-
-    // ==================== КАТАЛОГ ====================
-    function renderProducts(productsToRender) {
-        let html = '';
-        productsToRender.forEach(p => {
-            html += `
-                <div class="product-card">
-                    <div class="product-image">${p.image}</div>
-                    <div class="product-title">${p.name}</div>
-                    <div class="product-price">${p.price} ₽</div>
-                    <button class="btn-add" onclick="addToCart(${p.id})">В корзину</button>
-                </div>
-            `;
-        });
-        document.getElementById('productsGrid').innerHTML = html;
-    }
-
-    window.filterProducts = (filter) => {
-        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-        event.target.classList.add('active');
-        let filtered = [...recommendedProducts];
-        if (filter === 'до 2000') filtered = filtered.filter(p => p.price <= 2000);
-        else if (filter === '2000-5000') filtered = filtered.filter(p => p.price > 2000 && p.price <= 5000);
-        else if (filter === '5000+') filtered = filtered.filter(p => p.price > 5000);
-        renderProducts(filtered);
-    };
-
-    // ==================== КОРЗИНА ====================
-    window.addToCart = (id) => {
-        cart.push(products.find(p => p.id === id));
-        localStorage.setItem('giftguru_cart', JSON.stringify(cart));
-        updateCartUI();
-        alert('Товар в корзине');
-    };
-
-    window.removeFromCart = (index) => {
-        cart.splice(index, 1);
-        localStorage.setItem('giftguru_cart', JSON.stringify(cart));
-        updateCartUI();
-    };
-
-    function updateCartUI() {
-        document.getElementById('cartCount').innerText = cart.length;
-        let html = '', total = 0;
-        cart.forEach((item, i) => {
-            total += item.price;
-            html += `
-                <div class="cart-item">
-                    <div class="cart-item-image">${item.image}</div>
-                    <div class="cart-item-info">
-                        <div>${item.name}</div>
-                        <div class="cart-item-price">${item.price}₽</div>
-                    </div>
-                    <div class="cart-item-remove" onclick="removeFromCart(${i})"><i class="fas fa-trash"></i></div>
-                </div>`;
-        });
-        document.getElementById('cartItems').innerHTML = html || '<p>Корзина пуста</p>';
-        document.getElementById('cartTotal').innerText = `Итого: ${total}₽`;
-    }
-
-    window.toggleCart = () => {
-        document.getElementById('cartModal').classList.toggle('open');
-        document.getElementById('cartOverlay').classList.toggle('active');
-    };
-
-    // ==================== ПОЛЬЗОВАТЕЛЬ ====================
-    function updateUserBadge() {
-        document.getElementById('userName').innerText = currentUser.name;
-    }
-
-    window.showAuthModal = () => {
-        document.getElementById('authModal').classList.add('active');
-        document.getElementById('authOverlay').classList.add('active');
-        document.getElementById('userNameInput').value = currentUser.name;
-        document.getElementById('userEmailInput').value = currentUser.email;
-    };
-
-    window.hideAuthModal = () => {
-        document.getElementById('authModal').classList.remove('active');
-        document.getElementById('authOverlay').classList.remove('active');
-    };
-
-    window.saveUser = () => {
-        currentUser = {
-            name: document.getElementById('userNameInput').value || 'Гость',
-            email: document.getElementById('userEmailInput').value || 'client@mail.ru'
+    <script>
+        const DB = {
+            getAnnouncements() { return JSON.parse(localStorage.getItem('announcements') || '[]'); },
+            getUsers() { return JSON.parse(localStorage.getItem('users') || '[]'); },
+            getCurrentUser() { const u = sessionStorage.getItem('currentUser'); return u ? JSON.parse(u) : null; },
+            setCurrentUser(u) { u ? sessionStorage.setItem('currentUser', JSON.stringify(u)) : sessionStorage.removeItem('currentUser'); }
         };
-        localStorage.setItem('giftguru_user', JSON.stringify(currentUser));
-        updateUserBadge();
-        hideAuthModal();
-    };
 
-    // ==================== ОФОРМЛЕНИЕ ЗАКАЗА ====================
-    window.checkout = () => {
-        if (cart.length === 0) { alert('Корзина пуста'); return; }
-        
-        // ВАША ПОЧТА - СЮДА ПРИХОДЯТ ЗАКАЗЫ
-        const SELLER_EMAIL = 'dominikamangl@gmail.com';
-        
-        let orderText = `🔔 НОВЫЙ ЗАКАЗ\n\n`;
-        orderText += `Клиент: ${currentUser.name}\n`;
-        orderText += `Email клиента: ${currentUser.email}\n\n`;
-        orderText += `Товары:\n`;
-        cart.forEach((item, i) => {
-            orderText += `${i+1}. ${item.name} - ${item.price}₽\n`;
-        });
-        const total = cart.reduce((sum, item) => sum + item.price, 0);
-        orderText += `\nИТОГО: ${total}₽\n`;
-        
-        // Отправляем через mailto - открывает почтовую программу
-        window.location.href = `mailto:${SELLER_EMAIL}?subject=${encodeURIComponent('Новый заказ GiftGuru')}&body=${encodeURIComponent(orderText)}`;
-        
-        // Очищаем корзину
-        cart = [];
-        localStorage.setItem('giftguru_cart', JSON.stringify(cart));
-        updateCartUI();
-        toggleCart();
-        alert('Заказ отправлен продавцу!');
-    };
-</script>
+        function initDatabase() {
+            if (!localStorage.getItem('users')) {
+                localStorage.setItem('users', JSON.stringify([
+                    { id: 1, email: 'moderator@newlife.ru', password: 'moderator123', firstName: 'Модератор', lastName: 'Элисты', phone: '+7 937 000-00-00', isModerator: true, registeredAt: '2026-01-01' }
+                ]));
+            }
+            if (!localStorage.getItem('announcements')) {
+                localStorage.setItem('announcements', JSON.stringify([
+                    { id: 1, userId: null, guestName: 'Анна', animalType: 'Кот', description: 'Рыжий кот, найден на ул. Ленина. Очень ласковый.', district: 'ул. Ленина, 25', foundDate: '2026-03-15', status: 'active', createdAt: '2026-03-15', phone: '+7 937 123-45-67', email: 'anna@mail.ru', photos: ['🐱'] },
+                    { id: 2, userId: null, guestName: 'Сергей', animalType: 'Собака', description: 'Собака с ошейником, ул. Кирова.', district: 'ул. Кирова, 10', foundDate: '2026-03-14', status: 'active', createdAt: '2026-03-14', phone: '+7 937 765-43-21', email: 'sergey@mail.ru', photos: ['🐶'] },
+                    { id: 3, userId: null, guestName: 'Елена', animalType: 'Хомяк', description: 'Ручной хомяк, 8 микрорайон.', district: '8 микрорайон, 12', foundDate: '2026-03-13', status: 'active', createdAt: '2026-03-13', phone: '+7 937 555-22-33', email: 'elena@mail.ru', photos: ['🐹'] }
+                ]));
+            }
+        }
+
+        function loadHomePage() {
+            const announcements = DB.getAnnouncements();
+            const active = announcements.filter(a => a.status === 'active').slice(0, 6);
+            document.getElementById('totalCount').textContent = announcements.length;
+            document.getElementById('foundCount').textContent = announcements.filter(a => a.status === 'found').length;
+            document.getElementById('usersCount').textContent = DB.getUsers().length;
+
+            const container = document.getElementById('announcementsContainer');
+            if (active.length === 0) { container.innerHTML = '<div style="text-align:center;color:white;padding:40px;">Пока нет объявлений</div>'; return; }
+            
+            container.innerHTML = active.map(item => {
+                const hasPhoto = item.photos && item.photos[0] && item.photos[0].startsWith('data:image');
+                return `
+                    <div class="pet-card" onclick="window.location.href='pet.html?id=${item.id}'">
+                        <div class="pet-image">${hasPhoto ? `<img src="${item.photos[0]}" alt="${item.animalType}">` : `<div class="emoji">${item.photos?.[0] || getEmoji(item.animalType)}</div>`}</div>
+                        <div class="pet-info">
+                            <span class="badge">${item.userId ? '👤 Зарегистрирован' : '👥 Гость'}</span>
+                            <h3>${item.animalType}</h3>
+                            <p>📍 ${item.district}</p>
+                            <p>📅 ${item.foundDate}</p>
+                            <p>📞 ${item.phone}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getEmoji(type) { const e = { 'Кот':'🐱','Собака':'🐶','Хомяк':'🐹','Попугай':'🦜','Кролик':'🐰' }; return e[type] || '🐾'; }
+
+        function updateMenu() {
+            const u = DB.getCurrentUser();
+            document.getElementById('loginLink').style.display = u ? 'none' : 'inline-block';
+            document.getElementById('registerLink').style.display = u ? 'none' : 'inline-block';
+            document.getElementById('profileLink').style.display = u ? 'inline-block' : 'none';
+            document.getElementById('logoutBtn').style.display = u ? 'inline-block' : 'none';
+        }
+
+        function logout() { DB.setCurrentUser(null); window.location.href = 'index.html'; }
+
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById("map"), { zoom: 15, center: { lat: 46.3122, lng: 44.2756 } });
+            new google.maps.Marker({ position: { lat: 46.3122, lng: 44.2756 }, map: map, title: "Новая жизнь - Элиста" });
+        }
+
+        initDatabase(); loadHomePage(); updateMenu();
+        document.getElementById('logoutBtn') && (document.getElementById('logoutBtn').onclick = (e) => { e.preventDefault(); logout(); });
+        setInterval(loadHomePage, 2000);
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap" async defer></script>
 </body>
 </html>
