@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск - Новая жизнь</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .header { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .header .container { display: flex; justify-content: space-between; align-items: center; height: 80px; }
+        .logo { font-size: 24px; font-weight: bold; color: #059669; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo-img { height: 50px; width: auto; }
+        .nav-menu { display: flex; gap: 25px; align-items: center; flex-wrap: wrap; }
+        .nav-menu a { text-decoration: none; color: #333; font-weight: 500; }
+        .btn { padding: 8px 20px; border-radius: 30px; font-weight: 600; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #059669; color: white; }
+        .search-form { background: white; padding: 30px; border-radius: 20px; margin: 30px 0; display: grid; grid-template-columns: 1fr 1fr 2fr auto; gap: 15px; }
+        .search-form select, .search-form input { padding: 12px 15px; border: 2px solid #d1fae5; border-radius: 30px; outline: none; }
+        .search-form button { padding: 12px 30px; background: #059669; color: white; border: none; border-radius: 30px; cursor: pointer; }
+        table { width: 100%; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        th { background: #059669; color: white; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #e5e7eb; }
+        .photo-thumb { width: 50px; height: 50px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; }
+        .pagination { display: flex; justify-content: center; gap: 10px; margin: 30px 0; }
+        .page-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: white; border-radius: 50%; cursor: pointer; border: none; }
+        .page-btn.active { background: #059669; color: white; }
+        @media (max-width: 768px) { .nav-menu { display: none; } .search-form { grid-template-columns: 1fr; } table { font-size: 12px; } th, td { padding: 8px; } }
+    </style>
+</head>
+<body>
+    <header class="header"><div class="container"><a href="index.html" class="logo"><img src="logo.png" class="logo-img" alt="Новая жизнь" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><span style="display: none;">🐾 Новая Жизнь</span></a>
+    <nav class="nav-menu"><a href="index.html">Главная</a><a href="search.html">Найти</a><a href="add.html">Добавить</a><a href="login.html">Вход</a><a href="register.html" class="btn btn-primary">Регистрация</a></nav></div></header>
+    <div class="container"><h1 style="color:white;margin:30px 0;">🔍 Поиск животных</h1>
+    <div class="search-form"><select id="districtFilter"><option value="">Все районы</option><option value="Ленина">ул. Ленина</option><option value="Кирова">ул. Кирова</option><option value="Пушкина">ул. Пушкина</option><option value="8 микрорайон">8 микрорайон</option></select>
+    <select id="typeFilter"><option value="">Все виды</option><option value="Кот">Кот</option><option value="Собака">Собака</option><option value="Хомяк">Хомяк</option></select>
+    <input type="text" id="searchQuery" placeholder="Поиск по описанию..."><button onclick="search()">Найти</button></div>
+    <div id="results"><table><thead><tr><th>Фото</th><th>Вид</th><th>Район</th><th>Дата</th><th>Описание</th><th>Телефон</th><th></th></tr></thead><tbody id="tableBody"></tbody></table></div>
+    <div class="pagination" id="pagination"></div></div>
+    <script>
+        const DB={getAnnouncements(){return JSON.parse(localStorage.getItem('announcements')||'[]');}};
+        let currentPage=1,itemsPerPage=10,currentData=[];
+        function loadData(){currentData=DB.getAnnouncements().filter(a=>a.status==='active');renderTable();}
+        function search(){const d=document.getElementById('districtFilter').value,t=document.getElementById('typeFilter').value,q=document.getElementById('searchQuery').value.toLowerCase();
+            let filtered=DB.getAnnouncements().filter(a=>a.status==='active');
+            if(d)filtered=filtered.filter(a=>a.district.includes(d));
+            if(t)filtered=filtered.filter(a=>a.animalType===t);
+            if(q)filtered=filtered.filter(a=>a.description.toLowerCase().includes(q));
+            currentData=filtered;currentPage=1;renderTable();}
+        function renderTable(){const s=(currentPage-1)*itemsPerPage,e=s+itemsPerPage,pd=currentData.slice(s,e);const tb=document.getElementById('tableBody');
+            if(pd.length===0){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:30px;">Ничего не найдено</td></tr>';}
+            else{tb.innerHTML=pd.map(i=>{const em={Кот:'🐱',Собака:'🐶',Хомяк:'🐹'};return `<tr><td><div class="photo-thumb">${em[i.animalType]||'🐾'}</div></td><td>${i.animalType}</td><td>${i.district}</td><td>${i.foundDate}</td><td>${i.description.substring(0,50)}...</td><td>${i.phone}</td><td><a href="pet.html?id=${i.id}" class="btn btn-primary" style="padding:5px 15px;">Подробнее</a></td></tr>`;}).join('');}
+            const tp=Math.ceil(currentData.length/itemsPerPage);const pg=document.getElementById('pagination');let html='';for(let i=1;i<=tp;i++)html+=`<button class="page-btn ${i===currentPage?'active':''}" onclick="goToPage(${i})">${i}</button>`;pg.innerHTML=html;}
+        function goToPage(p){currentPage=p;renderTable();}
+        window.onload=loadData;
+        document.getElementById('searchQuery').addEventListener('keypress',e=>{if(e.key==='Enter')search();});
+    </script>
+</body>
+</html>

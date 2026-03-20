@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модерация - Новая жизнь</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .header { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .header .container { display: flex; justify-content: space-between; align-items: center; height: 80px; }
+        .logo { font-size: 24px; font-weight: bold; color: #059669; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo-img { height: 50px; width: auto; }
+        .nav-menu { display: flex; gap: 25px; align-items: center; flex-wrap: wrap; }
+        .nav-menu a { text-decoration: none; color: #333; font-weight: 500; }
+        .btn { padding: 8px 20px; border-radius: 30px; font-weight: 600; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #059669; color: white; }
+        .btn-outline { background: transparent; border: 2px solid #059669; color: #059669; }
+        .controls { background: white; padding: 20px; border-radius: 20px; margin: 30px 0; display: flex; gap: 15px; flex-wrap: wrap; }
+        .controls select, .controls input { padding: 10px 15px; border: 2px solid #d1fae5; border-radius: 30px; flex: 1; min-width: 200px; }
+        table { width: 100%; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        th { background: #059669; color: white; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #e5e7eb; }
+        .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
+        .status-moderation { background: #fef3c7; color: #b45309; }
+        .status-active { background: #d1fae5; color: #047857; }
+        .status-found { background: #dbeafe; color: #1e40af; }
+        .status-archive { background: #e5e7eb; color: #374151; }
+        .action-btn { padding: 5px 10px; border: none; border-radius: 15px; cursor: pointer; margin: 0 2px; font-size: 12px; }
+        .action-active { background: #10b981; color: white; }
+        .action-found { background: #3b82f6; color: white; }
+        .action-archive { background: #6b7280; color: white; }
+        .no-auth { text-align: center; padding: 50px; background: white; border-radius: 30px; max-width: 500px; margin: 50px auto; }
+        @media (max-width: 768px) { .nav-menu { display: none; } }
+    </style>
+</head>
+<body>
+    <header class="header"><div class="container"><a href="index.html" class="logo"><img src="logo.png" class="logo-img" alt="Новая жизнь" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><span style="display: none;">🐾 Новая Жизнь</span></a>
+    <nav class="nav-menu"><a href="index.html">Главная</a><a href="search.html">Найти</a><a href="add.html">Добавить</a><a href="#" id="logoutBtn" style="display: none;" class="btn btn-outline">Выйти</a></nav></div></header>
+    <div class="container" id="moderatorContainer"><div class="no-auth"><h2>🔒 Проверка доступа...</h2></div></div>
+    <script>
+        const DB={getAnnouncements(){return JSON.parse(localStorage.getItem('announcements')||'[]');},saveAnnouncements(d){localStorage.setItem('announcements',JSON.stringify(d));},getCurrentUser(){const u=sessionStorage.getItem('currentUser');return u?JSON.parse(u):null;},setCurrentUser(u){u?sessionStorage.setItem('currentUser',JSON.stringify(u)):sessionStorage.removeItem('currentUser');}};
+        function checkModerator(){const u=DB.getCurrentUser();if(!u||!u.isModerator){document.getElementById('moderatorContainer').innerHTML=`<div class="no-auth"><h2>🔒 Доступ запрещен</h2><p>Только для модераторов</p><a href="index.html" class="btn btn-primary">На главную</a></div>`;document.getElementById('logoutBtn').style.display='none';return false;}document.getElementById('logoutBtn').style.display='inline-block';return true;}
+        function loadAnnouncements(){if(!checkModerator())return;let anns=DB.getAnnouncements();function render(data){const tb=document.getElementById('announcementsBody');if(!tb)return;const getStatusClass=(s)=>({moderation:'status-moderation',active:'status-active',found:'status-found',archive:'status-archive'}[s]||'');const getStatusText=(s)=>({moderation:'На модерации',active:'Активно',found:'Найдено',archive:'В архиве'}[s]||s);tb.innerHTML=data.map(a=>`<tr><td>${a.id}</td><td>${a.animalType}</td><td>${a.district}</td><td>${a.foundDate}</td><td><span class="status-badge ${getStatusClass(a.status)}">${getStatusText(a.status)}</span></td><td><button class="action-btn action-active" onclick="changeStatus(${a.id},'active')">✓ Активно</button><button class="action-btn action-found" onclick="changeStatus(${a.id},'found')">🏠 Найдено</button><button class="action-btn action-archive" onclick="changeStatus(${a.id},'archive')">📦 В архив</button></td></tr>`).join('');}
+        document.getElementById('moderatorContainer').innerHTML=`<h1 style="color:white;margin:30px 0;">🛡️ Панель модератора</h1><div class="controls"><select id="statusFilter"><option value="">Все статусы</option><option value="moderation">На модерации</option><option value="active">Активные</option><option value="found">Найдено</option><option value="archive">В архиве</option></select><select id="sortFilter"><option value="new">Сначала новые</option><option value="old">Сначала старые</option></select><input type="text" id="searchInput" placeholder="Поиск..."></div><table><thead><tr><th>ID</th><th>Вид</th><th>Район</th><th>Дата</th><th>Статус</th><th>Действия</th></tr></thead><tbody id="announcementsBody"></tbody></table>`;
+        function filter(){let data=[...anns];const st=document.getElementById('statusFilter')?.value;if(st)data=data.filter(a=>a.status===st);const sq=document.getElementById('searchInput')?.value.toLowerCase();if(sq)data=data.filter(a=>a.description.toLowerCase().includes(sq)||a.district.toLowerCase().includes(sq));const sf=document.getElementById('sortFilter')?.value;if(sf==='new')data.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));else data.sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));render(data);}
+        const sf=document.getElementById('statusFilter');if(sf)sf.onchange=filter;const sfi=document.getElementById('searchInput');if(sfi)sfi.onkeyup=filter;const so=document.getElementById('sortFilter');if(so)so.onchange=filter;render(anns);}
+        function changeStatus(id,newStatus){let anns=DB.getAnnouncements();const idx=anns.findIndex(a=>a.id===id);if(idx!==-1){anns[idx].status=newStatus;DB.saveAnnouncements(anns);loadAnnouncements();}}
+        function logout(){DB.setCurrentUser(null);window.location.href='index.html';}
+        window.onload=loadAnnouncements;
+        document.getElementById('logoutBtn')&&(document.getElementById('logoutBtn').onclick=e=>{e.preventDefault();logout();});
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карточка животного - Новая жизнь</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .header { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .header .container { display: flex; justify-content: space-between; align-items: center; height: 80px; }
+        .logo { font-size: 24px; font-weight: bold; color: #059669; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo-img { height: 50px; width: auto; }
+        .nav-menu { display: flex; gap: 25px; align-items: center; flex-wrap: wrap; }
+        .nav-menu a { text-decoration: none; color: #333; font-weight: 500; }
+        .btn { padding: 8px 20px; border-radius: 30px; font-weight: 600; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #059669; color: white; }
+        .pet-card { max-width: 1000px; margin: 40px auto; background: white; border-radius: 30px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; background: #1f2937; }
+        .gallery-item { aspect-ratio: 1; overflow: hidden; cursor: pointer; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .gallery-item:hover img { transform: scale(1.1); }
+        .gallery-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 64px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; cursor: pointer; }
+        .modal.active { display: flex; }
+        .modal img { max-width: 90%; max-height: 90%; }
+        .modal-close { position: absolute; top: 20px; right: 40px; color: white; font-size: 40px; cursor: pointer; }
+        .pet-info { padding: 40px; }
+        .pet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
+        .pet-header h1 { font-size: 36px; color: #064e3b; display: flex; align-items: center; gap: 15px; }
+        .status-badge { padding: 8px 20px; border-radius: 30px; font-weight: 600; }
+        .status-active { background: #d1fae5; color: #047857; }
+        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px; }
+        .info-card { background: #f0fdf4; padding: 20px; border-radius: 20px; }
+        .info-label { font-size: 12px; text-transform: uppercase; color: #059669; font-weight: 600; margin-bottom: 8px; }
+        .info-value { font-size: 18px; color: #064e3b; }
+        .full-width { grid-column: span 2; }
+        .description-card { background: #f0fdf4; padding: 25px; border-radius: 20px; margin-bottom: 30px; }
+        .description-card h3 { color: #059669; margin-bottom: 15px; }
+        .contact-card { background: linear-gradient(135deg, #059669, #047857); color: white; padding: 30px; border-radius: 20px; text-align: center; }
+        .contact-info { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+        .contact-item a { color: white; text-decoration: none; font-size: 18px; }
+        .notification { position: fixed; bottom: 30px; right: 30px; background: #059669; color: white; padding: 12px 24px; border-radius: 50px; display: none; z-index: 1000; }
+        .loader { text-align: center; padding: 60px; color: white; }
+        @media (max-width: 768px) { .nav-menu { display: none; } .info-grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } .gallery { grid-template-columns: repeat(2, 1fr); } .pet-header h1 { font-size: 24px; } }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification">✅ Скопировано!</div>
+    <header class="header"><div class="container"><a href="index.html" class="logo"><img src="logo.png" class="logo-img" alt="Новая жизнь" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><span style="display: none;">🐾 Новая Жизнь</span></a>
+    <nav class="nav-menu"><a href="index.html">Главная</a><a href="search.html">Найти</a><a href="add.html">Добавить</a><a href="login.html">Вход</a><a href="register.html" class="btn btn-primary">Регистрация</a></nav></div></header>
+    <div class="container" id="petContainer"><div class="loader">Загрузка...</div></div>
+    <div id="imageModal" class="modal" onclick="closeModal()"><span class="modal-close">&times;</span><img id="modalImage" src=""></div>
+    <script>
+        const DB={getAnnouncements(){return JSON.parse(localStorage.getItem('announcements')||'[]');}};
+        function getPetId(){const p=new URLSearchParams(window.location.search);return parseInt(p.get('id'));}
+        function showNotification(m){const n=document.getElementById('notification');n.textContent=m;n.style.display='block';setTimeout(()=>n.style.display='none',2000);}
+        function copyToClipboard(t){navigator.clipboard.writeText(t);showNotification(`✅ ${t} скопирован!`);}
+        function openModal(src){const m=document.getElementById('imageModal'),mi=document.getElementById('modalImage');m.classList.add('active');mi.src=src;}
+        function closeModal(){document.getElementById('imageModal').classList.remove('active');}
+        function getStatusText(s){const st={active:'Активно',moderation:'На модерации',found:'Найдено',archive:'В архиве'};return st[s]||s;}
+        function getStatusClass(s){const sc={active:'status-active'};return sc[s]||'';}
+        function loadPetCard(){const id=getPetId();const c=document.getElementById('petContainer');if(!id){c.innerHTML='<div style="text-align:center;padding:60px;background:white;border-radius:30px;"><h2>❌ Объявление не найдено</h2><a href="index.html">На главную</a></div>';return;}
+        const pet=DB.getAnnouncements().find(a=>a.id===id);if(!pet){c.innerHTML='<div style="text-align:center;padding:60px;background:white;border-radius:30px;"><h2>❌ Животное не найдено</h2><a href="index.html">На главную</a></div>';return;}
+        const photos=pet.photos||[];const em={Кот:'🐱',Собака:'🐶',Хомяк:'🐹',Попугай:'🦜'}[pet.animalType]||'🐾';
+        let gal='';for(let i=0;i<Math.min(photos.length,6);i++){const p=photos[i];if(p&&p.startsWith('data:image')){gal+=`<div class="gallery-item" onclick="openModal('${p}')"><img src="${p}" alt="Фото"></div>`;}else{gal+=`<div class="gallery-item"><div class="gallery-placeholder">${p||em}</div></div>`;}}
+        while(gal.split('gallery-item').length-1<3)gal+=`<div class="gallery-item"><div class="gallery-placeholder">${em}</div></div>`;
+        const fd=new Date(pet.foundDate).toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
+        const cd=new Date(pet.createdAt).toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
+        c.innerHTML=`<div class="pet-card"><div class="gallery">${gal}</div><div class="pet-info"><div class="pet-header"><h1><span>${em}</span>${pet.animalType}</h1><span class="status-badge ${getStatusClass(pet.status)}">${getStatusText(pet.status)}</span></div>
+        <div class="info-grid"><div class="info-card"><div class="info-label">📍 Район</div><div class="info-value">${pet.district}</div></div>
+        <div class="info-card"><div class="info-label">📅 Дата находки</div><div class="info-value">${fd}</div></div>
+        <div class="info-card"><div class="info-label">🕐 Дата объявления</div><div class="info-value">${cd}</div></div>
+        <div class="info-card"><div class="info-label">🏷️ Клеймо</div><div class="info-value">${pet.brand||'Не указано'}</div></div>
+        <div class="info-card full-width"><div class="info-label">👤 Кто добавил</div><div class="info-value">${pet.userId?'Зарегистрированный пользователь':'Гость'} ${pet.guestName?`(${pet.guestName})`:''}</div></div></div>
+        <div class="description-card"><h3>📝 Описание</h3><p>${pet.description}</p></div>
+        <div class="contact-card"><h3>📞 Свяжитесь с нашедшим</h3><div class="contact-info"><div class="contact-item"><div>📱</div><a href="tel:${pet.phone}" onclick="copyToClipboard('${pet.phone}')">${pet.phone}</a></div><div class="contact-item"><div>✉️</div><a href="mailto:${pet.email}" onclick="copyToClipboard('${pet.email}')">${pet.email}</a></div></div></div>
+        <a href="search.html" style="display:inline-block;margin-top:20px;color:#059669;">← Вернуться к поиску</a></div></div>`;}
+        window.onload=loadPetCard;
+    </script>
+</body>
+</html>

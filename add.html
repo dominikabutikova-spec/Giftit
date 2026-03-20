@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить объявление - Новая жизнь</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .header { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; margin-bottom: 30px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .header .container { display: flex; justify-content: space-between; align-items: center; height: 80px; }
+        .logo { font-size: 24px; font-weight: bold; color: #059669; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo-img { height: 50px; width: auto; }
+        .nav-menu { display: flex; gap: 25px; align-items: center; flex-wrap: wrap; }
+        .nav-menu a { text-decoration: none; color: #333; font-weight: 500; }
+        .btn { padding: 8px 20px; border-radius: 30px; font-weight: 600; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #059669; color: white; }
+        .form-card { max-width: 800px; margin: 0 auto; background: white; border-radius: 30px; padding: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        h1 { color: #064e3b; margin-bottom: 30px; text-align: center; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #065f46; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 18px; border: 2px solid #d1fae5; border-radius: 30px; font-size: 16px; outline: none; }
+        .form-group textarea { border-radius: 20px; min-height: 100px; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #059669; }
+        .photo-upload-section { background: #f0fdf4; border-radius: 20px; padding: 25px; margin: 25px 0; }
+        .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 15px 0; }
+        .photo-item { aspect-ratio: 1; border: 2px dashed #059669; border-radius: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: white; position: relative; overflow: hidden; }
+        .photo-item.has-image { border: 2px solid #059669; cursor: default; }
+        .photo-preview { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+        .photo-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #059669; z-index: 1; background: rgba(255,255,255,0.9); width: 100%; height: 100%; }
+        .photo-placeholder span { font-size: 32px; }
+        .remove-photo { position: absolute; top: 5px; right: 5px; width: 30px; height: 30px; background: #ef4444; color: white; border: none; border-radius: 50%; cursor: pointer; z-index: 2; }
+        .photo-input { display: none; }
+        .photo-counter { font-size: 14px; color: #059669; font-weight: 600; }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; margin: 20px 0; padding: 15px; background: #f0fdf4; border-radius: 15px; }
+        .register-fields { display: none; padding: 20px; background: #f0fdf4; border-radius: 20px; margin: 20px 0; }
+        #registerOption:checked ~ .register-fields { display: block; }
+        .submit-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #059669, #047857); color: white; border: none; border-radius: 30px; font-size: 18px; font-weight: 600; cursor: pointer; }
+        .message { padding: 15px; border-radius: 15px; margin-bottom: 20px; display: none; }
+        .message.success { background: #d1fae5; color: #059669; display: block; }
+        .message.error { background: #fee2e2; color: #dc2626; display: block; }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: #059669; text-decoration: none; }
+        @media (max-width: 768px) { .nav-menu { display: none; } .photo-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header class="header"><div class="container"><a href="index.html" class="logo"><img src="logo.png" class="logo-img" alt="Новая жизнь" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';"><span style="display: none;">🐾 Новая Жизнь</span></a>
+    <nav class="nav-menu"><a href="index.html">Главная</a><a href="search.html">Найти</a><a href="add.html">Добавить</a><a href="login.html">Вход</a><a href="register.html" class="btn btn-primary">Регистрация</a></nav></div></header>
+    <div class="container"><div class="form-card"><h1>📸 Добавить объявление</h1><div id="message" class="message"></div>
+    <form id="addForm"><div class="form-group"><label>Телефон *</label><input type="tel" id="phone" placeholder="+7 937 123-45-67" required></div>
+    <div class="form-group"><label>Email *</label><input type="email" id="email" placeholder="example@mail.ru" required></div>
+    <div class="checkbox-group"><input type="checkbox" id="registerOption"><label for="registerOption">📝 Хочу зарегистрироваться</label></div>
+    <div class="register-fields"><div class="form-group"><label>Имя</label><input type="text" id="firstName"></div><div class="form-group"><label>Фамилия</label><input type="text" id="lastName"></div><div class="form-group"><label>Пароль</label><input type="password" id="password"></div><div class="form-group"><label>Повтор пароля</label><input type="password" id="confirmPassword"></div></div>
+    <div class="form-group"><label>Вид животного *</label><select id="animalType" required><option value="">Выберите</option><option value="Кот">🐱 Кот</option><option value="Собака">🐶 Собака</option><option value="Хомяк">🐹 Хомяк</option><option value="Попугай">🦜 Попугай</option></select></div>
+    <div class="photo-upload-section"><div style="display:flex;justify-content:space-between;"><label>📷 Фотографии (макс. 3 шт)</label><span class="photo-counter" id="photoCounter">0/3 фото</span></div>
+    <div class="photo-grid" id="photoGrid"><div class="photo-item" id="photoSlot1" onclick="triggerFileInput(1)"><div class="photo-placeholder"><span>➕</span><small>Фото 1</small></div></div>
+    <div class="photo-item" id="photoSlot2" onclick="triggerFileInput(2)"><div class="photo-placeholder"><span>➕</span><small>Фото 2</small></div></div>
+    <div class="photo-item" id="photoSlot3" onclick="triggerFileInput(3)"><div class="photo-placeholder"><span>➕</span><small>Фото 3</small></div></div></div>
+    <input type="file" id="fileInput1" class="photo-input" accept="image/*" onchange="handleFileSelect(1, this)">
+    <input type="file" id="fileInput2" class="photo-input" accept="image/*" onchange="handleFileSelect(2, this)">
+    <input type="file" id="fileInput3" class="photo-input" accept="image/*" onchange="handleFileSelect(3, this)">
+    <p style="font-size:12px;color:#666;margin-top:10px;">* Можно загрузить JPG, PNG до 5MB. Также можно вставить фото (Ctrl+V)</p></div>
+    <div class="form-group"><label>Описание *</label><textarea id="description" placeholder="Где нашли, особые приметы..." required></textarea></div>
+    <div class="form-group"><label>Клеймо / Приметы</label><input type="text" id="brand" placeholder="Например: 123ABC"></div>
+    <div class="form-group"><label>Район *</label><select id="district" required><option value="">Выберите</option><option value="ул. Ленина">📍 ул. Ленина</option><option value="ул. Кирова">📍 ул. Кирова</option><option value="ул. Пушкина">📍 ул. Пушкина</option><option value="8 микрорайон">📍 8 микрорайон</option></select></div>
+    <div class="form-group"><label>Дата находки *</label><input type="date" id="foundDate" required></div>
+    <div class="checkbox-group"><input type="checkbox" id="agree" checked required><label for="agree">Согласен на обработку данных</label></div>
+    <button type="submit" class="submit-btn" id="submitBtn">📤 Опубликовать</button></form><a href="index.html" class="back-link">← На главную</a></div></div>
+    <script>
+        const photoData = {1:null,2:null,3:null};
+        document.getElementById('foundDate').valueAsDate = new Date();
+        function triggerFileInput(s){if(!photoData[s]) document.getElementById(`fileInput${s}`).click();}
+        function handleFileSelect(s,i){if(i.files&&i.files[0]){const f=i.files[0];if(f.size>5*1024*1024){showMessage('Файл >5MB',true);i.value='';return;}if(!f.type.startsWith('image/')){showMessage('Только изображения',true);i.value='';return;}const r=new FileReader();r.onload=e=>{photoData[s]=e.target.result;updatePhotoSlot(s);updateCounter();};r.readAsDataURL(f);}}
+        function updatePhotoSlot(s){const d=document.getElementById(`photoSlot${s}`);const p=photoData[s];if(p){d.innerHTML=`<img src="${p}" class="photo-preview"><button class="remove-photo" onclick="removePhoto(${s});event.stopPropagation();">✕</button>`;d.classList.add('has-image');}else{d.innerHTML=`<div class="photo-placeholder" onclick="triggerFileInput(${s})"><span>➕</span><small>Фото ${s}</small></div>`;d.classList.remove('has-image');}}
+        function removePhoto(s){photoData[s]=null;document.getElementById(`fileInput${s}`).value='';updatePhotoSlot(s);updateCounter();}
+        function updateCounter(){const c=Object.values(photoData).filter(p=>p!==null).length;document.getElementById('photoCounter').textContent=`${c}/3 фото`;}
+        function showMessage(t,e){const m=document.getElementById('message');m.className=e?'message error':'message success';m.textContent=t;setTimeout(()=>m.style.display='none',5000);}
+        const DB={getAnnouncements(){return JSON.parse(localStorage.getItem('announcements')||'[]');},saveAnnouncements(d){localStorage.setItem('announcements',JSON.stringify(d));},getUsers(){return JSON.parse(localStorage.getItem('users')||'[]');},saveUsers(d){localStorage.setItem('users',JSON.stringify(d));},getCurrentUser(){const u=sessionStorage.getItem('currentUser');return u?JSON.parse(u):null;}};
+        document.getElementById('addForm').addEventListener('submit',function(e){e.preventDefault();
+            const p=document.getElementById('phone').value,em=document.getElementById('email').value,at=document.getElementById('animalType').value,desc=document.getElementById('description').value,brand=document.getElementById('brand').value,dist=document.getElementById('district').value,fd=document.getElementById('foundDate').value,regOpt=document.getElementById('registerOption').checked;
+            if(!p||!em||!at||!desc||!dist||!fd){showMessage('Заполните все поля',true);return;}
+            let photos=Object.values(photoData).filter(p=>p!==null);if(photos.length===0){const e={'Кот':'🐱','Собака':'🐶','Хомяк':'🐹','Попугай':'🦜'};photos.push(e[at]||'🐾');}
+            let uid=null,cu=DB.getCurrentUser();if(cu)uid=cu.id;
+            if(regOpt){const fn=document.getElementById('firstName').value,ln=document.getElementById('lastName').value,pw=document.getElementById('password').value,cp=document.getElementById('confirmPassword').value;
+                if(!fn||!ln||!pw){showMessage('Заполните регистрацию',true);return;}if(pw!==cp){showMessage('Пароли не совпадают',true);return;}if(pw.length<6){showMessage('Пароль минимум 6 символов',true);return;}
+                const users=DB.getUsers();if(users.some(u=>u.email===em)){showMessage('Email уже занят',true);return;}
+                const nu={id:users.length+1,email:em,password:pw,firstName:fn,lastName:ln,phone:p,registeredAt:new Date().toISOString(),isModerator:false};users.push(nu);DB.saveUsers(users);uid=nu.id;sessionStorage.setItem('currentUser',JSON.stringify(nu));}
+            const anns=DB.getAnnouncements();const na={id:anns.length+1,userId:uid,guestName:!uid?'Гость':null,animalType:at,description:desc,brand:brand||null,district:dist,foundDate:fd,phone:p,email:em,photos:photos,status:'active',createdAt:new Date().toISOString().split('T')[0]};
+            anns.push(na);DB.saveAnnouncements(anns);showMessage('✅ Объявление добавлено!');document.getElementById('submitBtn').disabled=true;setTimeout(()=>window.location.href='index.html',2000);});
+        document.getElementById('registerOption').addEventListener('change',e=>{document.querySelector('.register-fields').style.display=e.target.checked?'block':'none';});
+        document.addEventListener('paste',function(e){const items=e.clipboardData.items;for(let i of items){if(i.type.indexOf('image')===0){const b=i.getAsFile();for(let s=1;s<=3;s++){if(!photoData[s]){const r=new FileReader();r.onload=ev=>{photoData[s]=ev.target.result;updatePhotoSlot(s);updateCounter();};r.readAsDataURL(b);break;}}showMessage('✅ Фото вставлено!');break;}}});
+    </script>
+</body>
+</html>
